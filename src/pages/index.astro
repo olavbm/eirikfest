@@ -52,8 +52,10 @@ const steps = [
   { n: "04", t: "Romundgardseter", note: "parkering ved hyttene", color: p.poppy, rotate: 1.5 },
 ];
 
-// Romundgardseter Hytter, Høvringen — approximate; tune marker if needed
-const cabin = { lat: 61.8964, lng: 9.4711 };
+// Romundgardseter Hytter, Høvringen.
+// Approximate position along Smuksjøsetervegen, just past Haukliseter (per romundgardseter.no/adkomst).
+// Fine-tune lat/lng if you have the exact spot.
+const cabin = { lat: 61.8895, lng: 9.493 };
 const directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=" +
   encodeURIComponent("Romundgardseter Hytter, Høvringen, 2672 Sel");
 
@@ -797,7 +799,7 @@ const wobblePath = (w: number, h: number) =>
     <script is:inline define:vars={{ cabin }}>
       const map = L.map("map", { scrollWheelZoom: false }).setView(
         [cabin.lat, cabin.lng],
-        12
+        13
       );
       L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 18,
