@@ -21,6 +21,30 @@ const facts = [
   { label: "superkraft", value: "smelte hjerter", color: p.butter, rotate: 1 },
 ];
 
+const plans = [
+  {
+    label: "lørdag",
+    title: "selve dagen",
+    body: "vi samles alle — kanskje 30 stykker — på hytta",
+    color: p.poppy,
+    rotate: -1.5,
+  },
+  {
+    label: "overnatting",
+    title: "bli hele helga",
+    body: "kom fredag, dra søndag — plass på hyttene",
+    color: p.sky,
+    rotate: 1,
+  },
+  {
+    label: "fritid",
+    title: "finn på noe",
+    body: "fjellturer, lek ute, kanskje en sauna — vi tar det som det kommer",
+    color: p.sage,
+    rotate: -1,
+  },
+];
+
 const steps = [
   { n: "01", t: "tog til Otta", note: "ca 3t fra Oslo S", color: p.butter, rotate: -1.5 },
   { n: "02", t: "vi henter på stasjonen", note: "felles transport fredag", color: p.sky, rotate: 1 },
@@ -347,6 +371,57 @@ const wobblePath = (w: number, h: number) =>
         opacity: 0.7;
       }
 
+      /* Plans */
+      .plans { padding: 120px 6vw; background: var(--bg); }
+      .plans-lead {
+        max-width: 640px;
+        margin: 24px auto 0;
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-size: clamp(18px, 1.8vw, 22px);
+        line-height: 1.5;
+        color: var(--ink);
+        text-align: center;
+        opacity: 0.85;
+      }
+      .plans-grid {
+        margin-top: 56px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      .plan-card {
+        border: 1.5px solid var(--ink);
+        border-radius: 20px;
+        padding: 26px 24px;
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+      .plan-label {
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink);
+        opacity: 0.7;
+      }
+      .plan-title {
+        margin-top: 8px;
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 28px;
+        color: var(--ink);
+        line-height: 1.1;
+      }
+      .plan-body {
+        margin-top: 12px;
+        font-weight: 500;
+        font-size: 16px;
+        color: var(--ink);
+        opacity: 0.85;
+        line-height: 1.5;
+      }
+
       /* Footer */
       .footer {
         background: var(--ink);
@@ -593,6 +668,36 @@ const wobblePath = (w: number, h: number) =>
             Høvringen<br />
             N-2672 Sel · Gudbrandsdalen
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Helga ───────── -->
+    <section class="section plans">
+      <div class="container">
+        <header class="header-center">
+          <div class="eyebrow">helga</div>
+          <h2 class="h2">kom og bli<br />en stund</h2>
+          <div class="wobble-row">
+            <svg width="180" height="10" viewBox="0 0 180 10">
+              <path d={wobblePath(180, 10)} fill="none" stroke={p.poppy} stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="plans-lead">
+            lørdag samles vi alle på hytta — kanskje rundt 30 stykker.
+            men du er hjertelig velkommen til å bli hele helga: kom fredag,
+            dra søndag, sov i hytta, finn på noe i mellomtiden.
+          </p>
+        </header>
+
+        <div class="plans-grid">
+          {plans.map((pl) => (
+            <div class="plan-card" style={`background: ${pl.color}; transform: rotate(${pl.rotate}deg);`}>
+              <div class="plan-label">{pl.label}</div>
+              <div class="plan-title">{pl.title}</div>
+              <div class="plan-body">{pl.body}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
