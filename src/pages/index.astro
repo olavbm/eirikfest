@@ -618,7 +618,6 @@ const wobblePath = (w: number, h: number) =>
       </div>
     </section>
 
-    <!-- ───────── About ───────── -->
     <!-- ───────── When & Where ───────── -->
     <section class="section ww">
       <div class="float" style="top: 60px; left: 8vw;">
@@ -657,6 +656,36 @@ const wobblePath = (w: number, h: number) =>
               åpne i Google Maps ↗
             </a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Helga ───────── -->
+    <section class="section plans">
+      <div class="container">
+        <header class="header-center">
+          <div class="eyebrow">helga</div>
+          <h2 class="h2">kom og bli<br />en stund</h2>
+          <div class="wobble-row">
+            <svg width="180" height="10" viewBox="0 0 180 10">
+              <path d={wobblePath(180, 10)} fill="none" stroke={p.poppy} stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="plans-lead">
+            lørdag samles vi alle på hytta.
+            men du er hjertelig velkommen til å bli hele helga: kom fredag,
+            dra søndag, sov i hytta, finn på noe i mellomtiden.
+          </p>
+        </header>
+
+        <div class="plans-grid">
+          {plans.map((pl) => (
+            <div class="plan-card" style={`background: ${pl.color}; transform: rotate(${pl.rotate}deg);`}>
+              <div class="plan-label">{pl.label}</div>
+              <div class="plan-title">{pl.title}</div>
+              <div class="plan-body">{pl.body}</div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
