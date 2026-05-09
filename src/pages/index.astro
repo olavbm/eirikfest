@@ -1,0 +1,744 @@
+---
+const p = {
+  bg: "#fbf4e4",
+  bgAlt: "#f3e9cf",
+  paper: "#fffdf6",
+  ink: "#2b2520",
+  inkSoft: "#6b5e4f",
+  sky: "#a4c8d8",
+  butter: "#e8c46a",
+  poppy: "#d96846",
+  sage: "#9bae84",
+  rose: "#e89aa3",
+};
+
+const facts = [
+  { label: "favorittlyd", value: "papp-papp-papp", color: p.butter, rotate: -2 },
+  { label: "favorittmat", value: "alt mor spiser", color: p.rose, rotate: 1 },
+  { label: "spesialitet", value: "å smile bredt", color: p.sky, rotate: -1 },
+  { label: "drømmer om", value: "trær og hunder", color: p.sage, rotate: 2 },
+  { label: "verste fiende", value: "støvsugeren", color: p.poppy, rotate: -2 },
+  { label: "superkraft", value: "smelte hjerter", color: p.butter, rotate: 1 },
+];
+
+const steps = [
+  { n: "01", t: "tog til Otta", note: "ca 3t fra Oslo S", color: p.butter, rotate: -1.5 },
+  { n: "02", t: "vi henter på stasjonen", note: "felles transport fredag", color: p.sky, rotate: 1 },
+  { n: "03", t: "opp til Høvringen", note: "25 min, smal vei", color: p.sage, rotate: -1 },
+  { n: "04", t: "Romundgardseter", note: "parkering ved hyttene", color: p.poppy, rotate: 1.5 },
+];
+
+const trees: [number, number][] = [
+  [80, 280], [140, 250], [70, 340], [180, 320], [240, 290],
+  [560, 200], [620, 240], [680, 280], [720, 220], [600, 290],
+  [380, 380], [460, 400], [520, 380],
+];
+
+const sunRays = Array.from({ length: 12 }, (_, i) => {
+  const a = (Math.PI * 2 * i) / 12;
+  return {
+    x1: Math.cos(a) * 26, y1: Math.sin(a) * 26,
+    x2: Math.cos(a) * 34, y2: Math.sin(a) * 34,
+  };
+});
+
+const heroSunRays = (() => {
+  const c = 46, r = 92 * 0.28;
+  return Array.from({ length: 12 }, (_, i) => {
+    const a = (Math.PI * 2 * i) / 12;
+    return {
+      x1: c + Math.cos(a) * (r + 6), y1: c + Math.sin(a) * (r + 6),
+      x2: c + Math.cos(a) * (r + 14), y2: c + Math.sin(a) * (r + 14),
+    };
+  });
+})();
+
+const flowerPetals = Array.from({ length: 6 }, (_, i) => {
+  const a = (Math.PI * 2 * i) / 6;
+  const c = 35;
+  return { cx: c + Math.cos(a) * 70 * 0.28, cy: c + Math.sin(a) * 70 * 0.28 };
+});
+
+const starPoints = (size: number) => {
+  const c = size / 2;
+  const pts: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const a = (Math.PI * 2 * i) / 10 - Math.PI / 2;
+    const r = i % 2 === 0 ? size * 0.46 : size * 0.2;
+    pts.push(`${c + Math.cos(a) * r},${c + Math.sin(a) * r}`);
+  }
+  return pts.join(" ");
+};
+
+const wobblePath = (w: number, h: number) =>
+  `M 4 ${h - 4} Q ${w * 0.2} 2, ${w * 0.4} ${h - 5} T ${w * 0.8} ${h - 4} T ${w - 4} ${h - 5}`;
+---
+
+<html lang="nb">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Navnefest til Eirik · 14–16. august 2026</title>
+    <meta name="description" content="Navnefest for Eirik på Romundgardseter Hytter, Høvringen, 14.–16. august 2026." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style define:vars={p}>
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: 'Quicksand', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      ::selection { background: var(--poppy); color: var(--paper); }
+
+      .section { position: relative; overflow: hidden; }
+      .container { max-width: 1100px; margin: 0 auto; }
+
+      /* Hero */
+      .hero {
+        min-height: 100vh;
+        padding: 48px 6vw 80px;
+        display: flex;
+        flex-direction: column;
+      }
+      .hero-dots {
+        position: absolute; inset: 0;
+        background-image: radial-gradient(color-mix(in srgb, var(--inkSoft) 13%, transparent) 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+      .hero-top { display: flex; justify-content: center; position: relative; z-index: 2; }
+      .hero-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 24px;
+        position: relative;
+        z-index: 2;
+        padding: 60px 0;
+      }
+      .hero-name-block { position: relative; display: inline-block; }
+      .hero-eyebrow {
+        font-weight: 500;
+        font-size: clamp(18px, 1.8vw, 22px);
+        color: var(--inkSoft);
+        margin-bottom: 20px;
+      }
+      .name-wobble {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 0.04em;
+        font-family: 'Caveat', 'Comic Sans MS', cursive;
+        font-weight: 700;
+        font-size: clamp(120px, 22vw, 320px);
+        line-height: 0.85;
+        -webkit-text-stroke: 2px var(--ink);
+      }
+      .name-wobble span {
+        display: inline-block;
+        transform-origin: center bottom;
+      }
+      .hero-tagline {
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-size: clamp(20px, 2.2vw, 30px);
+        color: var(--ink);
+        max-width: 640px;
+        line-height: 1.4;
+        margin-top: 12px;
+      }
+      .sticker-row {
+        display: flex; gap: 14px; flex-wrap: wrap;
+        justify-content: center; margin-top: 16px;
+      }
+
+      /* Sticker pill */
+      .sticker {
+        background: var(--sticker-bg);
+        border: 1.5px solid var(--ink);
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-family: 'Quicksand', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.02em;
+        color: var(--ink);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        box-shadow: 2px 2px 0 var(--ink);
+      }
+
+      /* Hero floating decorations */
+      .float { position: absolute; }
+
+      /* About */
+      .about {
+        background: var(--bgAlt);
+        padding: 100px 6vw;
+      }
+      .header-center { text-align: center; }
+      .eyebrow {
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--inkSoft);
+        margin-bottom: 12px;
+      }
+      .h2 {
+        margin: 0;
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 600;
+        font-style: italic;
+        font-size: clamp(40px, 5.5vw, 72px);
+        line-height: 1;
+        color: var(--ink);
+      }
+      .wobble-row { display: flex; justify-content: center; margin-top: 14px; }
+      .about-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        max-width: 900px;
+        margin: 56px auto 0;
+      }
+      .fact-card {
+        border: 1.5px solid var(--ink);
+        border-radius: 18px;
+        padding: 20px 22px;
+        box-shadow: 3px 3px 0 var(--ink);
+        min-height: 110px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .fact-label {
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--ink);
+        opacity: 0.7;
+        margin-bottom: 4px;
+      }
+      .fact-value {
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-size: 22px;
+        color: var(--ink);
+        line-height: 1.15;
+      }
+
+      /* WhereWhen */
+      .ww { padding: 120px 6vw; background: var(--bg); }
+      .ww-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        position: relative;
+        z-index: 1;
+      }
+      @media (max-width: 800px) {
+        .ww-grid { grid-template-columns: 1fr; }
+      }
+      .card {
+        border: 1.5px solid var(--ink);
+        border-radius: 24px;
+        padding: 40px 36px;
+        box-shadow: 4px 4px 0 var(--ink);
+        position: relative;
+      }
+      .card-eyebrow {
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink);
+        opacity: 0.7;
+      }
+      .card-headline {
+        margin-top: 12px;
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-weight: 600;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .card-headline.lg { font-size: clamp(40px, 5vw, 64px); }
+      .card-headline.md { font-size: clamp(36px, 4.5vw, 56px); }
+      .card-body {
+        margin-top: 18px;
+        font-weight: 500;
+        font-size: 17px;
+        color: var(--ink);
+        opacity: 0.8;
+        line-height: 1.5;
+      }
+
+      /* Map */
+      .map-section { background: var(--bgAlt); padding: 100px 6vw; }
+      .map-h2 { font-size: clamp(40px, 5.5vw, 64px); }
+      .map-card {
+        background: var(--paper);
+        border: 1.5px solid var(--ink);
+        border-radius: 24px;
+        padding: 8px;
+        box-shadow: 5px 5px 0 var(--ink);
+        position: relative;
+        z-index: 2;
+        margin-top: 48px;
+      }
+      .map-inner {
+        background: var(--bg);
+        border-radius: 18px;
+        position: relative;
+        aspect-ratio: 16 / 9;
+        min-height: 380px;
+        overflow: hidden;
+      }
+      .map-inner svg { display: block; }
+      .step-grid {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .step-card {
+        border: 1.5px solid var(--ink);
+        border-radius: 16px;
+        padding: 16px 18px;
+        box-shadow: 2px 2px 0 var(--ink);
+      }
+      .step-num {
+        font-family: 'Caveat', cursive;
+        font-weight: 700;
+        font-size: 32px;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .step-title {
+        margin-top: 6px;
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-size: 19px;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+      .step-note {
+        margin-top: 4px;
+        font-weight: 500;
+        font-size: 13px;
+        color: var(--ink);
+        opacity: 0.7;
+      }
+
+      /* Footer */
+      .footer {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 100px 6vw 60px;
+      }
+      .footer-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+      .footer-headline {
+        font-family: 'Caveat', cursive;
+        font-weight: 700;
+        font-size: clamp(48px, 6vw, 84px);
+        color: var(--paper);
+        line-height: 1;
+      }
+      .footer-tagline {
+        margin-top: 32px;
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-size: 22px;
+        color: rgba(255, 253, 246, 0.85);
+      }
+      .footer-meta {
+        margin-top: 40px;
+        font-weight: 500;
+        font-size: 14px;
+        color: rgba(255, 253, 246, 0.55);
+        letter-spacing: 0.08em;
+      }
+
+      svg { display: block; }
+    </style>
+  </head>
+
+  <body>
+    <!-- ───────── Hero ───────── -->
+    <section class="section hero">
+      <div class="hero-dots"></div>
+
+      <!-- Floating decorations -->
+      <div class="float" style="top: 8%; left: 6vw;">
+        <!-- Sun 92 -->
+        <svg width="92" height="92" viewBox="0 0 92 92">
+          {heroSunRays.map(({ x1, y1, x2, y2 }) => (
+            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={p.ink} stroke-width="1.8" stroke-linecap="round" />
+          ))}
+          <circle cx="46" cy="46" r={92 * 0.28} fill={p.butter} stroke={p.ink} stroke-width="1.8" />
+          <circle cx={46 - 92 * 0.28 * 0.35} cy={46 - 92 * 0.28 * 0.15} r="2.2" fill={p.ink} />
+          <circle cx={46 + 92 * 0.28 * 0.35} cy={46 - 92 * 0.28 * 0.15} r="2.2" fill={p.ink} />
+          <path d={`M ${46 - 92 * 0.28 * 0.4} ${46 + 92 * 0.28 * 0.2} Q 46 ${46 + 92 * 0.28 * 0.55} ${46 + 92 * 0.28 * 0.4} ${46 + 92 * 0.28 * 0.2}`}
+                fill="none" stroke={p.ink} stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="float" style="top: 10%; right: 8vw;">
+        <!-- Cloud 120 -->
+        <svg width="120" height="66" viewBox="0 0 80 44">
+          <path d="M 14 36 Q 4 36 6 26 Q 4 18 14 18 Q 16 8 28 10 Q 34 2 46 8 Q 58 4 60 16 Q 74 14 74 26 Q 76 36 64 36 Z"
+                fill={p.paper} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="float" style="top: 30%; right: 14vw;">
+        <!-- Cloud 70 -->
+        <svg width="70" height="38.5" viewBox="0 0 80 44">
+          <path d="M 14 36 Q 4 36 6 26 Q 4 18 14 18 Q 16 8 28 10 Q 34 2 46 8 Q 58 4 60 16 Q 74 14 74 26 Q 76 36 64 36 Z"
+                fill={p.paper} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="float" style="bottom: 18%; left: 4vw;">
+        <!-- Flower 70 -->
+        <svg width="70" height="70" viewBox="0 0 70 70">
+          {flowerPetals.map(({ cx, cy }) => (
+            <circle cx={cx} cy={cy} r={70 * 0.18} fill={p.rose} stroke={p.ink} stroke-width="1.4" />
+          ))}
+          <circle cx="35" cy="35" r={70 * 0.16} fill={p.butter} stroke={p.ink} stroke-width="1.4" />
+        </svg>
+      </div>
+
+      <div class="float" style="bottom: 8%; right: 6vw;">
+        <!-- Fox 110 -->
+        <svg width="110" height="77" viewBox="0 0 80 56">
+          <path d="M 14 44 L 8 26 L 18 32 L 26 18 L 34 32 L 44 18 L 52 32 L 60 26 L 56 44 Z"
+                fill={p.poppy} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+          <ellipse cx="35" cy="40" rx="20" ry="10" fill={p.poppy} stroke={p.ink} stroke-width="1.6" />
+          <ellipse cx="35" cy="44" rx="11" ry="5" fill={p.paper} stroke={p.ink} stroke-width="1.2" />
+          <circle cx="28" cy="36" r="1.6" fill={p.ink} />
+          <circle cx="42" cy="36" r="1.6" fill={p.ink} />
+          <path d="M 33 41 Q 35 43 37 41" fill="none" stroke={p.ink} stroke-width="1.4" stroke-linecap="round" />
+          <path d="M 55 38 Q 70 32 76 44" fill={p.poppy} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M 70 36 Q 76 40 76 44" fill={p.paper} stroke={p.ink} stroke-width="1.2" />
+        </svg>
+      </div>
+
+      <div class="float" style="top: 44%; left: 5vw; transform: rotate(-12deg);">
+        <svg width="36" height="36" viewBox="0 0 36 36">
+          <polygon points={starPoints(36)} fill={p.sage} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="float" style="bottom: 32%; right: 9vw; transform: rotate(18deg);">
+        <svg width="28" height="28" viewBox="0 0 28 28">
+          <polygon points={starPoints(28)} fill={p.poppy} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <header class="hero-top">
+        <div class="sticker" style={`--sticker-bg: ${p.sky}; transform: rotate(-3deg);`}>
+          <span>✶</span> Navnefest · 14–16. august 2026
+        </div>
+      </header>
+
+      <div class="hero-main">
+        <div class="hero-name-block">
+          <!-- Crown perched -->
+          <div class="float" style="top: -36px; left: 8%; transform: rotate(-10deg);">
+            <svg width="70" height="54.6" viewBox="0 0 60 47">
+              <path d="M 6 36 L 8 14 L 18 26 L 30 8 L 42 26 L 52 14 L 54 36 Z"
+                    fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+              <path d="M 6 36 L 54 36 L 54 42 L 6 42 Z"
+                    fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+              <circle cx="18" cy="26" r="2.4" fill={p.ink} />
+              <circle cx="30" cy="10" r="2.4" fill={p.ink} />
+              <circle cx="42" cy="26" r="2.4" fill={p.ink} />
+            </svg>
+          </div>
+
+          <div class="hero-eyebrow">hei på deg, jeg heter</div>
+
+          <div class="name-wobble" aria-label="Eirik">
+            <span style={`color: ${p.poppy}; transform: rotate(-4deg);`}>E</span>
+            <span style={`color: ${p.sky}; transform: rotate(3deg);`}>i</span>
+            <span style={`color: ${p.butter}; transform: rotate(-2deg);`}>r</span>
+            <span style={`color: ${p.sage}; transform: rotate(4deg);`}>i</span>
+            <span style={`color: ${p.poppy}; transform: rotate(-3deg);`}>k</span>
+          </div>
+
+          <div class="wobble-row" style="margin-top: 8px;">
+            <svg width="280" height="14" viewBox="0 0 280 14">
+              <path d={wobblePath(280, 14)} fill="none" stroke={p.poppy} stroke-width="3" stroke-linecap="round" />
+            </svg>
+          </div>
+        </div>
+
+        <p class="hero-tagline">
+          jeg er åtte måneder gammel og temmelig ny her i verden. <br />
+          vil du komme på fest med meg?
+        </p>
+
+        <div class="sticker-row">
+          <div class="sticker" style={`--sticker-bg: ${p.butter}; transform: rotate(-2deg);`}>
+            <svg width="16" height="16" viewBox="0 0 28 28">
+              <path d="M 14 24 C 4 16 4 8 9 6 C 12 5 14 7 14 9 C 14 7 16 5 19 6 C 24 8 24 16 14 24 Z"
+                    fill={p.poppy} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+            </svg>
+            født august 2025
+          </div>
+          <div class="sticker" style={`--sticker-bg: ${p.rose}; transform: rotate(3deg);`}>
+            👑 «den eneveldige»
+          </div>
+          <div class="sticker" style={`--sticker-bg: ${p.sage}; transform: rotate(-3deg);`}>
+            <span>↓</span> alt om helga under
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── About ───────── -->
+    <section class="section about">
+      <div class="float" style="top: 30px; right: 8vw;">
+        <!-- Bird 70 -->
+        <svg width="70" height="49" viewBox="0 0 60 42">
+          <ellipse cx="26" cy="24" rx="18" ry="13" fill={p.sky} stroke={p.ink} stroke-width="1.6" />
+          <circle cx="40" cy="18" r="9" fill={p.sky} stroke={p.ink} stroke-width="1.6" />
+          <circle cx="42" cy="16" r="1.6" fill={p.ink} />
+          <path d="M 47 19 L 54 18 L 47 22 Z" fill={p.butter} stroke={p.ink} stroke-width="1.4" stroke-linejoin="round" />
+          <path d="M 16 22 Q 10 18 8 24" fill="none" stroke={p.ink} stroke-width="1.6" stroke-linecap="round" />
+          <line x1="32" y1="36" x2="32" y2="40" stroke={p.ink} stroke-width="1.6" stroke-linecap="round" />
+          <line x1="36" y1="36" x2="36" y2="40" stroke={p.ink} stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="container">
+        <header class="header-center">
+          <div class="eyebrow">litt om meg</div>
+          <h2 class="h2">jeg er ganske ny <br />her i verden</h2>
+          <div class="wobble-row">
+            <svg width="180" height="10" viewBox="0 0 180 10">
+              <path d={wobblePath(180, 10)} fill="none" stroke={p.sky} stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+        </header>
+
+        <div class="about-grid">
+          {facts.map((f) => (
+            <div
+              class="fact-card"
+              style={`background: ${f.color}; transform: rotate(${f.rotate}deg);`}
+            >
+              <div class="fact-label">{f.label}</div>
+              <div class="fact-value">{f.value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── When & Where ───────── -->
+    <section class="section ww">
+      <div class="float" style="top: 60px; left: 8vw;">
+        <!-- Moon 64 -->
+        <svg width="64" height="64" viewBox="0 0 72 72">
+          <path d="M 50 12 A 26 26 0 1 0 50 60 A 20 20 0 1 1 50 12 Z"
+                fill={p.sky} stroke={p.ink} stroke-width="1.8" stroke-linejoin="round" />
+          <path d="M 32 30 Q 36 32 40 30" fill="none" stroke={p.ink} stroke-width="1.8" stroke-linecap="round" />
+          <path d="M 32 42 Q 38 46 44 42" fill="none" stroke={p.ink} stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </div>
+      <div class="float" style="bottom: 80px; right: 10vw; transform: rotate(20deg);">
+        <svg width="32" height="32" viewBox="0 0 32 32">
+          <polygon points={starPoints(32)} fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="container ww-grid">
+        <div class="card" style={`background: ${p.sky}; transform: rotate(-1deg);`}>
+          <div class="card-eyebrow">når</div>
+          <div class="card-headline lg">14. — 16.<br />august 2026</div>
+          <div class="card-body">
+            kom fredag fra kl. 16<br />
+            farvel søndag etter lunsj
+          </div>
+        </div>
+        <div class="card" style={`background: ${p.rose}; transform: rotate(1.5deg);`}>
+          <div class="card-eyebrow">hvor</div>
+          <div class="card-headline md">Romundgardseter<br />Hytter</div>
+          <div class="card-body">
+            Høvringen<br />
+            N-2672 Sel · Gudbrandsdalen
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Map ───────── -->
+    <section class="section map-section">
+      <div class="container">
+        <header class="header-center">
+          <div class="eyebrow">finn meg</div>
+          <h2 class="h2 map-h2">opp i fjellet,<br />over noen kuer</h2>
+        </header>
+
+        <div class="map-card">
+          <div class="map-inner">
+            <svg viewBox="0 0 800 450" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
+              <!-- Hills -->
+              <path d="M 0 350 Q 200 280 400 320 T 800 300 L 800 450 L 0 450 Z" fill={p.sage} opacity="0.4" />
+              <path d="M 0 380 Q 200 340 400 360 T 800 350 L 800 450 L 0 450 Z" fill={p.sage} opacity="0.6" />
+
+              <!-- River -->
+              <path d="M 0 410 Q 150 400 300 412 T 600 408 T 800 414"
+                    fill="none" stroke={p.sky} stroke-width="6" stroke-linecap="round" opacity="0.7" />
+
+              <!-- Road -->
+              <path d="M 720 60 Q 600 100 520 160 Q 460 220 400 240 Q 340 260 280 260"
+                    fill="none" stroke={p.ink} stroke-width="2" stroke-dasharray="2 8" />
+
+              <!-- Footpath -->
+              <path d="M 280 260 L 320 240 L 360 235 L 400 220"
+                    fill="none" stroke={p.poppy} stroke-width="3" stroke-dasharray="3 6" stroke-linecap="round" />
+
+              <!-- Trees -->
+              {trees.map(([x, y]) => (
+                <g transform={`translate(${x} ${y})`}>
+                  <path d="M 0 0 L -10 18 L 10 18 Z" fill={p.sage} stroke={p.ink} stroke-width="1.4" stroke-linejoin="round" />
+                  <path d="M 0 -8 L -8 10 L 8 10 Z" fill={p.sage} stroke={p.ink} stroke-width="1.4" stroke-linejoin="round" />
+                </g>
+              ))}
+
+              <!-- Otta -->
+              <g transform="translate(720 60)">
+                <rect x="-14" y="-2" width="28" height="20" fill={p.poppy} stroke={p.ink} stroke-width="1.6" />
+                <path d="M -16 -2 L 0 -16 L 16 -2 Z" fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+                <text y="32" font-family="Caveat, cursive" font-size="20" font-weight="700"
+                      fill={p.ink} text-anchor="middle">Otta</text>
+              </g>
+
+              <!-- Cow -->
+              <g transform="translate(440 248)">
+                <ellipse cx="0" cy="0" rx="14" ry="8" fill={p.paper} stroke={p.ink} stroke-width="1.4" />
+                <ellipse cx="-6" cy="-2" rx="3" ry="2" fill={p.ink} />
+                <ellipse cx="5" cy="2" rx="2.5" ry="1.5" fill={p.ink} />
+                <circle cx="-12" cy="-2" r="4" fill={p.paper} stroke={p.ink} stroke-width="1.4" />
+                <circle cx="-13" cy="-3" r="0.8" fill={p.ink} />
+                <line x1="-4" y1="6" x2="-4" y2="11" stroke={p.ink} stroke-width="1.2" stroke-linecap="round" />
+                <line x1="2" y1="6" x2="2" y2="11" stroke={p.ink} stroke-width="1.2" stroke-linecap="round" />
+              </g>
+
+              <!-- Cabin -->
+              <g transform="translate(400 220)">
+                <rect x="-26" y="-6" width="52" height="32" fill={p.poppy} stroke={p.ink} stroke-width="1.8" />
+                <path d="M -30 -6 L 0 -30 L 30 -6 Z" fill={p.butter} stroke={p.ink} stroke-width="1.8" stroke-linejoin="round" />
+                <rect x="-6" y="6" width="12" height="20" fill={p.ink} />
+                <rect x="-22" y="2" width="10" height="10" fill={p.sky} stroke={p.ink} stroke-width="1.2" />
+                <rect x="12" y="2" width="10" height="10" fill={p.sky} stroke={p.ink} stroke-width="1.2" />
+                <circle cx="14" cy="-30" r="4" fill={p.paper} stroke={p.ink} stroke-width="1.2" />
+                <circle cx="20" cy="-40" r="5" fill={p.paper} stroke={p.ink} stroke-width="1.2" />
+                <circle cx="16" cy="-52" r="6" fill={p.paper} stroke={p.ink} stroke-width="1.2" />
+
+                <g transform="translate(0 -76)">
+                  <rect x="-72" y="-14" width="144" height="28" rx="14" ry="14"
+                        fill={p.butter} stroke={p.ink} stroke-width="1.6" />
+                  <text y="6" font-family="Caveat, cursive" font-size="22" font-weight="700"
+                        fill={p.ink} text-anchor="middle">Romundgardseter</text>
+                </g>
+
+                <line x1="0" y1="-62" x2="0" y2="-32" stroke={p.ink} stroke-width="1.6" />
+                <path d="M -4 -36 L 0 -28 L 4 -36 Z" fill={p.ink} />
+              </g>
+
+              <!-- Sun on map -->
+              <g transform="translate(110 80)">
+                <circle r="20" fill={p.butter} stroke={p.ink} stroke-width="1.6" />
+                {sunRays.map(({ x1, y1, x2, y2 }) => (
+                  <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={p.ink} stroke-width="1.6" stroke-linecap="round" />
+                ))}
+                <circle cx="-7" cy="-3" r="1.6" fill={p.ink} />
+                <circle cx="7" cy="-3" r="1.6" fill={p.ink} />
+                <path d="M -7 5 Q 0 11 7 5" fill="none" stroke={p.ink} stroke-width="1.6" stroke-linecap="round" />
+              </g>
+
+              <!-- Cloud -->
+              <g transform="translate(280 70)">
+                <path d="M 0 12 Q -10 12 -8 4 Q -10 -2 -2 -2 Q 0 -10 8 -8 Q 14 -14 22 -8 Q 32 -10 32 0 Q 38 0 36 8 Q 38 14 28 12 Z"
+                      fill={p.paper} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+              </g>
+
+              <!-- Bird (M-shape) -->
+              <g transform="translate(550 90)">
+                <path d="M 0 0 Q 6 -6 12 0 Q 18 -6 24 0" fill="none" stroke={p.ink} stroke-width="2" stroke-linecap="round" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="step-grid">
+          {steps.map((s) => (
+            <div class="step-card" style={`background: ${s.color}; transform: rotate(${s.rotate}deg);`}>
+              <div class="step-num">{s.n}</div>
+              <div class="step-title">{s.t}</div>
+              <div class="step-note">{s.note}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Footer ───────── -->
+    <footer class="section footer">
+      <div class="float" style="top: 40px; left: 10vw; transform: rotate(-12deg);">
+        <svg width="28" height="28" viewBox="0 0 28 28">
+          <polygon points={starPoints(28)} fill={p.butter} stroke={p.paper} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="float" style="top: 60px; right: 12vw; transform: rotate(18deg);">
+        <svg width="26" height="26" viewBox="0 0 28 28">
+          <path d="M 14 24 C 4 16 4 8 9 6 C 12 5 14 7 14 9 C 14 7 16 5 19 6 C 24 8 24 16 14 24 Z"
+                fill={p.poppy} stroke={p.paper} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+      <div class="float" style="bottom: 40px; right: 8vw; transform: rotate(-8deg);">
+        <svg width="22" height="22" viewBox="0 0 22 22">
+          <polygon points={starPoints(22)} fill={p.rose} stroke={p.paper} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="footer-inner">
+        <div class="footer-headline">vi sees i fjellet!</div>
+        <div class="wobble-row" style="margin-top: 16px;">
+          <svg width="220" height="12" viewBox="0 0 220 12">
+            <path d={wobblePath(220, 12)} fill="none" stroke={p.butter} stroke-width="3" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="footer-tagline">klem fra Eirik, Mor og Far</div>
+        <div class="footer-meta">spørsmål? · mor@familien.no · +47 900 00 000</div>
+      </div>
+    </footer>
+  </body>
+</html>
