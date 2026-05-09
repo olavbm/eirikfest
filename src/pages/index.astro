@@ -337,11 +337,7 @@ const wobblePath = (w: number, h: number) =>
       .map-inner svg { display: block; }
       #map { width: 100%; height: 100%; }
       .leaflet-container { font-family: 'Quicksand', system-ui, sans-serif; background: var(--bg); }
-      .map-actions {
-        margin-top: 24px;
-        display: flex;
-        justify-content: center;
-      }
+      .card-actions { margin-top: 24px; }
       .directions-link {
         background: var(--paper);
         border: 1.5px solid var(--ink);
@@ -695,6 +691,11 @@ const wobblePath = (w: number, h: number) =>
             Høvringen<br />
             N-2672 Sel · Gudbrandsdalen
           </div>
+          <div class="card-actions">
+            <a class="directions-link" href={directionsUrl} target="_blank" rel="noopener noreferrer">
+              åpne i Google Maps ↗
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -741,11 +742,6 @@ const wobblePath = (w: number, h: number) =>
           <div class="map-inner" id="map" aria-label="Kart til Romundgardseter Hytter"></div>
         </div>
 
-        <div class="map-actions">
-          <a class="directions-link" href={directionsUrl} target="_blank" rel="noopener noreferrer">
-            åpne veibeskrivelse i Google Maps ↗
-          </a>
-        </div>
 
         <div class="step-grid">
           {steps.map((s) => (
