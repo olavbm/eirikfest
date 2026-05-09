@@ -2,6 +2,5 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://olavbm.github.io',
-  base: '/eirikfest',
+  site: 'https://eirikfest.no',
 });
