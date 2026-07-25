@@ -49,7 +49,8 @@ const steps = [
   { n: "01", t: "tog til Otta", note: "ca 3t fra Oslo S", color: p.butter, rotate: -1.5 },
   { n: "02", t: "vi henter på stasjonen", note: "felles transport fredag", color: p.sky, rotate: 1 },
   { n: "03", t: "opp til Høvringen", note: "25 min, smal vei", color: p.sage, rotate: -1 },
-  { n: "04", t: "Romundgardseter", note: "parkering ved hyttene", color: p.poppy, rotate: 1.5 },
+  // soft hyphen so the name breaks as "Romund-/gardseter" in the narrow mobile card
+  { n: "04", t: "Romund­gardseter", note: "parkering ved hyttene", color: p.poppy, rotate: 1.5 },
 ];
 
 const directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=" +
@@ -93,11 +94,12 @@ const wobblePath = (w: number, h: number) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Navnefest til Eirik · 14–16. august 2026</title>
     <meta name="description" content="Navnefest for Eirik på Romundgardseter Hytter, Høvringen, 14.–16. august 2026." />
+    <meta name="theme-color" content={p.bg} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fraunces:ital,wght@1,400;1,600&family=Quicksand:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
     <style define:vars={p}>
@@ -118,6 +120,7 @@ const wobblePath = (w: number, h: number) =>
       /* Hero */
       .hero {
         min-height: 100vh;
+        min-height: 100svh;
         padding: 48px 6vw 80px;
         display: flex;
         flex-direction: column;
@@ -448,8 +451,69 @@ const wobblePath = (w: number, h: number) =>
         color: rgba(255, 253, 246, 0.55);
         letter-spacing: 0.08em;
       }
+      .footer-meta a {
+        color: rgba(255, 253, 246, 0.8);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        /* comfortable thumb target without breaking the inline line */
+        display: inline-block;
+        padding: 6px 0;
+      }
 
       svg { display: block; }
+
+      /* ───────── Mobile ───────── */
+      @media (max-width: 640px) {
+        /* Decorations that land on top of the name and tagline */
+        .float-cloud-sm, .float-star-a { display: none; }
+        .float-crown { top: -50px !important; left: -4px !important; }
+        .float-fox svg { width: 84px; height: 59px; }
+        .float-flower svg { width: 54px; height: 54px; }
+
+        .hero { padding: 28px 6vw 56px; }
+        .hero-main { padding: 28px 0; gap: 18px; }
+        .hero-eyebrow { margin-bottom: 14px; }
+        .hero-tagline { font-size: 18px; margin-top: 8px; }
+        .sticker-row { gap: 10px; margin-top: 8px; }
+
+        .about, .map-section { padding: 64px 6vw; }
+        .ww, .plans { padding: 64px 6vw; }
+        .footer { padding: 64px 6vw 48px; }
+
+        /* Long words like "Romundgardseter" were forcing the column wider
+           than the screen, clipping the cards' right edge. */
+        .ww-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+        .card { padding: 26px 22px; border-radius: 20px; }
+        /* scales down below ~365px so "Romundgardseter" still fits the card */
+        .card-headline.md { font-size: min(30px, 8.2vw); }
+        .card-headline.lg { font-size: 38px; }
+        .card-body { font-size: 16px; margin-top: 14px; }
+
+        /* Two up — the values are short, one per row wasted a lot of scroll */
+        .about-grid, .step-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+        .about-grid { margin-top: 36px; }
+        .fact-card { padding: 16px; min-height: 92px; }
+        .fact-label { font-size: 11px; letter-spacing: 0.08em; }
+        .fact-value { font-size: 19px; }
+        .step-grid { margin-top: 28px; }
+        .step-card { padding: 14px; }
+        /* "Romundgardseter" is wider than a half-width card */
+        .step-title { font-size: 16px; overflow-wrap: break-word; }
+        .step-num { font-size: 28px; }
+
+        .float-f-heart { top: 18px !important; right: 5vw !important; }
+        .float-f-star { bottom: 12px !important; right: 4vw !important; }
+
+        .plans-grid { margin-top: 36px; gap: 16px; }
+        .plan-card { padding: 22px 20px; }
+        .plans-lead { font-size: 17px; margin-top: 18px; }
+
+        .footer-tagline { font-size: 19px; margin-top: 24px; }
+        .footer-meta { margin-top: 28px; }
+      }
     </style>
   </head>
 
@@ -481,7 +545,7 @@ const wobblePath = (w: number, h: number) =>
         </svg>
       </div>
 
-      <div class="float" style="top: 30%; right: 14vw;">
+      <div class="float float-cloud-sm" style="top: 30%; right: 14vw;">
         <!-- Cloud 70 -->
         <svg width="70" height="38.5" viewBox="0 0 80 44">
           <path d="M 14 36 Q 4 36 6 26 Q 4 18 14 18 Q 16 8 28 10 Q 34 2 46 8 Q 58 4 60 16 Q 74 14 74 26 Q 76 36 64 36 Z"
@@ -489,7 +553,7 @@ const wobblePath = (w: number, h: number) =>
         </svg>
       </div>
 
-      <div class="float" style="bottom: 18%; left: 4vw;">
+      <div class="float float-flower" style="bottom: 18%; left: 4vw;">
         <!-- Flower 70 -->
         <svg width="70" height="70" viewBox="0 0 70 70">
           {flowerPetals.map(({ cx, cy }) => (
@@ -499,7 +563,7 @@ const wobblePath = (w: number, h: number) =>
         </svg>
       </div>
 
-      <div class="float" style="bottom: 8%; right: 6vw;">
+      <div class="float float-fox" style="bottom: 8%; right: 6vw;">
         <!-- Fox 110 -->
         <svg width="110" height="77" viewBox="0 0 80 56">
           <path d="M 14 44 L 8 26 L 18 32 L 26 18 L 34 32 L 44 18 L 52 32 L 60 26 L 56 44 Z"
@@ -514,7 +578,7 @@ const wobblePath = (w: number, h: number) =>
         </svg>
       </div>
 
-      <div class="float" style="top: 44%; left: 5vw; transform: rotate(-12deg);">
+      <div class="float float-star-a" style="top: 44%; left: 5vw; transform: rotate(-12deg);">
         <svg width="36" height="36" viewBox="0 0 36 36">
           <polygon points={starPoints(36)} fill={p.sage} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
         </svg>
@@ -535,7 +599,7 @@ const wobblePath = (w: number, h: number) =>
       <div class="hero-main">
         <div class="hero-name-block">
           <!-- Crown perched -->
-          <div class="float" style="top: -36px; left: 8%; transform: rotate(-10deg);">
+          <div class="float float-crown" style="top: -36px; left: 8%; transform: rotate(-10deg);">
             <svg width="70" height="54.6" viewBox="0 0 60 47">
               <path d="M 6 36 L 8 14 L 18 26 L 30 8 L 42 26 L 52 14 L 54 36 Z"
                     fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
@@ -727,13 +791,13 @@ const wobblePath = (w: number, h: number) =>
           <polygon points={starPoints(28)} fill={p.butter} stroke={p.paper} stroke-width="1.6" stroke-linejoin="round" />
         </svg>
       </div>
-      <div class="float" style="top: 60px; right: 12vw; transform: rotate(18deg);">
+      <div class="float float-f-heart" style="top: 60px; right: 12vw; transform: rotate(18deg);">
         <svg width="26" height="26" viewBox="0 0 28 28">
           <path d="M 14 24 C 4 16 4 8 9 6 C 12 5 14 7 14 9 C 14 7 16 5 19 6 C 24 8 24 16 14 24 Z"
                 fill={p.poppy} stroke={p.paper} stroke-width="1.6" stroke-linejoin="round" />
         </svg>
       </div>
-      <div class="float" style="bottom: 40px; right: 8vw; transform: rotate(-8deg);">
+      <div class="float float-f-star" style="bottom: 40px; right: 8vw; transform: rotate(-8deg);">
         <svg width="22" height="22" viewBox="0 0 22 22">
           <polygon points={starPoints(22)} fill={p.rose} stroke={p.paper} stroke-width="1.6" stroke-linejoin="round" />
         </svg>
@@ -747,7 +811,10 @@ const wobblePath = (w: number, h: number) =>
           </svg>
         </div>
         <div class="footer-tagline">klem fra Eirik, Olav og Ingeborg</div>
-        <div class="footer-meta">spørsmål? · olavmarkussen@hotmail.no · +47 913 12 988</div>
+        <div class="footer-meta">
+          spørsmål? · <a href="mailto:olavmarkussen@hotmail.no">olavmarkussen@hotmail.no</a>
+          · <a href="tel:+4791312988">+47 913 12 988</a>
+        </div>
       </div>
     </footer>
 
