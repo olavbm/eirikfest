@@ -45,12 +45,62 @@ const plans = [
   },
 ];
 
-const steps = [
-  { n: "01", t: "tog til Otta", note: "ca 3t fra Oslo S", color: p.butter, rotate: -1.5 },
-  { n: "02", t: "vi henter på stasjonen", note: "felles transport fredag", color: p.sky, rotate: 1 },
-  { n: "03", t: "opp til Høvringen", note: "25 min, smal vei", color: p.sage, rotate: -1 },
-  // soft hyphen so the name breaks as "Romund-/gardseter" in the narrow mobile card
-  { n: "04", t: "Romund­gardseter", note: "parkering ved hyttene", color: p.poppy, rotate: 1.5 },
+const practical = [
+  {
+    label: "soving",
+    title: "sengetøy må du ta med",
+    body: "sengesett, laken og håndkle følger ikke med hytta — ta med eget. glemmer du det, ordner vi leie på stedet",
+    color: p.sky,
+    rotate: -1,
+  },
+  {
+    label: "mat",
+    title: "maten er ordnet",
+    body: "all mat gjennom helga er tatt hånd om — du trenger ikke tenke på det",
+    color: p.poppy,
+    rotate: -1.5,
+  },
+  {
+    label: "soving",
+    title: "rommene er fordelt",
+    body: "vi har satt opp hvem som sover hvor på forhånd — du får beskjed når du kommer",
+    color: p.rose,
+    rotate: -1.5,
+  },
+  {
+    label: "overnatting",
+    title: "hytta er ordnet",
+    body: "overnatting og vask er tatt hånd om — du trenger bare å komme",
+    color: p.sage,
+    rotate: 1.5,
+  },
+  {
+    label: "gaver",
+    title: "du trenger ikke ta med noe",
+    body: "at du bruker en helg av tiden din på å være med oss er gave nok. vil du absolutt gi noe likevel, har vi en ønskeliste lenger ned",
+    color: p.sky,
+    rotate: 1,
+  },
+  {
+    label: "hunder",
+    title: "bikkja er velkommen",
+    body: "hunder er lov på setra — ta den gjerne med på fjelltur",
+    color: p.butter,
+    rotate: -1,
+  },
+];
+
+// `id` is the localStorage key for the checkbox — keep it stable even if the
+// wording of `item` changes, or people lose their ticked-off list.
+const packing = [
+  { id: "sengetoy", item: "sengesett og laken", note: "må tas med — glemmer du det, ordner vi leie på stedet", color: p.poppy, rotate: -1.5 },
+  { id: "handkle", item: "håndkle", note: "følger heller ikke med — ta med eget", color: p.butter, rotate: 1 },
+  { id: "skift", item: "et skift eller to", note: "det er to netter — du trenger ikke mer enn det", color: p.sky, rotate: -1 },
+  { id: "finstas", item: "pyntet til festen?", note: "kleskoden er «pent, komfortabelt» — ta på noe du føler deg fin i og orker å ha på hele dagen", color: p.rose, rotate: 1.5 },
+  { id: "innesko", item: "innesko", note: "tøfler eller ullsokker, gulvene er kalde om morgenen", color: p.sage, rotate: -1 },
+  { id: "fjellsko", item: "fjellsko", note: "vi går på tur hvis været tillater det", color: p.butter, rotate: 1 },
+  { id: "regntoy", item: "regntøy og ullag", note: "høyfjellet i august — det kan bli surt og vått", color: p.poppy, rotate: -1.5 },
+  { id: "badetoy", item: "badetøy", note: "til saunaen", color: p.sky, rotate: 1 },
 ];
 
 const directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=" +
@@ -144,6 +194,27 @@ const wobblePath = (w: number, h: number) =>
         position: relative;
         z-index: 2;
         padding: 60px 0;
+      }
+      /* Anchors the hat, and the top margin keeps its pompom clear of the squiggle. */
+      .hero-photo-block { position: relative; display: inline-block; margin-top: 44px; }
+      .hero-photo-block .float-hat {
+        top: -72px; left: 50%;
+        transform: translateX(calc(-50% - 14px)) rotate(-10deg);
+        transform-origin: bottom center;
+      }
+      .hero-photo {
+        display: block;
+        flex: none;
+        width: clamp(210px, 28vw, 330px);
+        height: auto;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--ink);
+        outline: 8px solid var(--paper);
+        background: var(--paper);
+        box-shadow: 0 10px 24px color-mix(in srgb, var(--ink) 18%, transparent);
+        transform: rotate(-3deg);
       }
       .hero-name-block { position: relative; display: inline-block; }
       .hero-eyebrow {
@@ -307,8 +378,6 @@ const wobblePath = (w: number, h: number) =>
       }
 
       /* Map */
-      .map-section { background: var(--bgAlt); padding: 100px 6vw; }
-      .map-h2 { font-size: clamp(40px, 5.5vw, 64px); }
       .card-actions { margin-top: 24px; }
       .directions-link {
         background: var(--paper);
@@ -330,40 +399,6 @@ const wobblePath = (w: number, h: number) =>
       .directions-link:hover {
         transform: rotate(-1deg) translate(-1px, -1px);
         box-shadow: 4px 4px 0 var(--ink);
-      }
-      .step-grid {
-        margin-top: 40px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 16px;
-      }
-      .step-card {
-        border: 1.5px solid var(--ink);
-        border-radius: 16px;
-        padding: 16px 18px;
-        box-shadow: 2px 2px 0 var(--ink);
-      }
-      .step-num {
-        font-family: 'Caveat', cursive;
-        font-weight: 700;
-        font-size: 32px;
-        line-height: 1;
-        color: var(--ink);
-      }
-      .step-title {
-        margin-top: 6px;
-        font-family: 'Fraunces', Georgia, serif;
-        font-style: italic;
-        font-size: 19px;
-        color: var(--ink);
-        line-height: 1.2;
-      }
-      .step-note {
-        margin-top: 4px;
-        font-weight: 500;
-        font-size: 13px;
-        color: var(--ink);
-        opacity: 0.7;
       }
 
       /* Plans */
@@ -417,6 +452,120 @@ const wobblePath = (w: number, h: number) =>
         line-height: 1.5;
       }
 
+      /* Practical */
+      .practical { padding: 120px 6vw; background: var(--bgAlt); }
+
+      /* Packing */
+      .packing { padding: 120px 6vw; background: var(--bg); }
+      .pack-progress {
+        margin-top: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .pack-count {
+        font-family: 'Caveat', cursive;
+        font-weight: 700;
+        font-size: 28px;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .pack-reset {
+        background: var(--paper);
+        border: 1.5px solid var(--ink);
+        border-radius: 999px;
+        padding: 8px 18px;
+        font-family: 'Quicksand', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--ink);
+        box-shadow: 2px 2px 0 var(--ink);
+        transform: rotate(-1deg);
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease;
+      }
+      .pack-reset:hover {
+        transform: rotate(-1deg) translate(-1px, -1px);
+        box-shadow: 3px 3px 0 var(--ink);
+      }
+      .pack-grid {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .pack-card {
+        border: 1.5px solid var(--ink);
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: 2px 2px 0 var(--ink);
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        cursor: pointer;
+        -webkit-user-select: none;
+        user-select: none;
+        transition: opacity 120ms ease, box-shadow 120ms ease;
+      }
+      /* whole card dims once its box is ticked */
+      .pack-card:has(.pack-check:checked) {
+        opacity: 0.5;
+        box-shadow: 1px 1px 0 var(--ink);
+      }
+      .pack-card:has(.pack-check:focus-visible) {
+        outline: 2.5px solid var(--ink);
+        outline-offset: 3px;
+      }
+      .pack-check {
+        appearance: none;
+        -webkit-appearance: none;
+        flex: none;
+        margin: 2px 0 0;
+        width: 22px;
+        height: 22px;
+        border: 1.5px solid var(--ink);
+        border-radius: 6px;
+        background: var(--paper);
+        position: relative;
+        cursor: pointer;
+      }
+      .pack-check:checked::after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 1px;
+        width: 6px;
+        height: 12px;
+        border: solid var(--ink);
+        border-width: 0 2.5px 2.5px 0;
+        transform: rotate(42deg);
+      }
+      .pack-item {
+        display: block;
+        font-family: 'Fraunces', Georgia, serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 21px;
+        line-height: 1.15;
+        color: var(--ink);
+      }
+      .pack-check:checked ~ .pack-text .pack-item {
+        text-decoration: line-through;
+        text-decoration-thickness: 2px;
+      }
+      .pack-note {
+        display: block;
+        margin-top: 6px;
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--ink);
+        opacity: 0.75;
+        line-height: 1.45;
+      }
+
+
       /* Footer */
       .footer {
         background: var(--ink);
@@ -466,18 +615,20 @@ const wobblePath = (w: number, h: number) =>
       @media (max-width: 640px) {
         /* Decorations that land on top of the name and tagline */
         .float-cloud-sm, .float-star-a { display: none; }
-        .float-crown { top: -50px !important; left: -4px !important; }
+        .float-hat svg { width: 58px; height: 74px; }
+        .hero-photo-block .float-hat { top: -56px; }
         .float-fox svg { width: 84px; height: 59px; }
         .float-flower svg { width: 54px; height: 54px; }
 
         .hero { padding: 28px 6vw 56px; }
         .hero-main { padding: 28px 0; gap: 18px; }
+        .hero-photo { outline-width: 6px; }
         .hero-eyebrow { margin-bottom: 14px; }
         .hero-tagline { font-size: 18px; margin-top: 8px; }
         .sticker-row { gap: 10px; margin-top: 8px; }
 
-        .about, .map-section { padding: 64px 6vw; }
-        .ww, .plans { padding: 64px 6vw; }
+        .about { padding: 64px 6vw; }
+        .ww, .plans, .practical, .packing { padding: 64px 6vw; }
         .footer { padding: 64px 6vw 48px; }
 
         /* Long words like "Romundgardseter" were forcing the column wider
@@ -490,7 +641,7 @@ const wobblePath = (w: number, h: number) =>
         .card-body { font-size: 16px; margin-top: 14px; }
 
         /* Two up — the values are short, one per row wasted a lot of scroll */
-        .about-grid, .step-grid {
+        .about-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 12px;
         }
@@ -498,11 +649,6 @@ const wobblePath = (w: number, h: number) =>
         .fact-card { padding: 16px; min-height: 92px; }
         .fact-label { font-size: 11px; letter-spacing: 0.08em; }
         .fact-value { font-size: 19px; }
-        .step-grid { margin-top: 28px; }
-        .step-card { padding: 14px; }
-        /* "Romundgardseter" is wider than a half-width card */
-        .step-title { font-size: 16px; overflow-wrap: break-word; }
-        .step-num { font-size: 28px; }
 
         .float-f-heart { top: 18px !important; right: 5vw !important; }
         .float-f-star { bottom: 12px !important; right: 4vw !important; }
@@ -510,6 +656,18 @@ const wobblePath = (w: number, h: number) =>
         .plans-grid { margin-top: 36px; gap: 16px; }
         .plan-card { padding: 22px 20px; }
         .plans-lead { font-size: 17px; margin-top: 18px; }
+
+        /* Short items — two up saves a lot of scroll on the packing list */
+        .pack-grid {
+          margin-top: 28px;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+        .pack-card { padding: 14px; gap: 10px; }
+        .pack-item { font-size: 17px; overflow-wrap: break-word; }
+        .pack-note { font-size: 13px; }
+        .pack-progress { margin-top: 24px; gap: 12px; }
+        .pack-count { font-size: 24px; }
 
         .footer-tagline { font-size: 19px; margin-top: 24px; }
         .footer-meta { margin-top: 28px; }
@@ -598,19 +756,6 @@ const wobblePath = (w: number, h: number) =>
 
       <div class="hero-main">
         <div class="hero-name-block">
-          <!-- Crown perched -->
-          <div class="float float-crown" style="top: -36px; left: 8%; transform: rotate(-10deg);">
-            <svg width="70" height="54.6" viewBox="0 0 60 47">
-              <path d="M 6 36 L 8 14 L 18 26 L 30 8 L 42 26 L 52 14 L 54 36 Z"
-                    fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
-              <path d="M 6 36 L 54 36 L 54 42 L 6 42 Z"
-                    fill={p.butter} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
-              <circle cx="18" cy="26" r="2.4" fill={p.ink} />
-              <circle cx="30" cy="10" r="2.4" fill={p.ink} />
-              <circle cx="42" cy="26" r="2.4" fill={p.ink} />
-            </svg>
-          </div>
-
           <div class="hero-eyebrow">hei på deg, jeg heter</div>
 
           <div class="name-wobble" aria-label="Eirik">
@@ -628,9 +773,27 @@ const wobblePath = (w: number, h: number) =>
           </div>
         </div>
 
+        <div class="hero-photo-block">
+          <img class="hero-photo" src="/eirik.jpg" width="640" height="640" alt="Eirik" />
+
+          <!-- Party hat perched on the photo -->
+          <div class="float float-hat">
+            <svg width="74" height="94" viewBox="0 0 60 76">
+              <path d="M 30 14 L 50 62 Q 30 69 10 62 Z"
+                    fill={p.sky} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+              <polyline points="19,45 25,41 31,45 37,41 43,45"
+                        fill="none" stroke={p.poppy} stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="30" cy="30" r="2.6" fill={p.poppy} />
+              <circle cx="23" cy="56" r="2.4" fill={p.rose} />
+              <circle cx="37" cy="56" r="2.4" fill={p.rose} />
+              <circle cx="30" cy="9" r="6.5" fill={p.butter} stroke={p.ink} stroke-width="1.6" />
+            </svg>
+          </div>
+        </div>
+
         <p class="hero-tagline">
           jeg er snart ett år gammel og temmelig ny her i verden. <br />
-          vil du komme på fest med meg?
+          og nå er det ikke lenge til vi sees!
         </p>
 
         <div class="sticker-row">
@@ -645,7 +808,7 @@ const wobblePath = (w: number, h: number) =>
             👑 «den eneveldige»
           </div>
           <div class="sticker" style={`--sticker-bg: ${p.sage}; transform: rotate(-3deg);`}>
-            <span>↓</span> alt om helga under
+            <span>↓</span> alt du trenger å vite
           </div>
         </div>
       </div>
@@ -693,6 +856,136 @@ const wobblePath = (w: number, h: number) =>
       </div>
     </section>
 
+    <!-- ───────── Praktisk ───────── -->
+    <section class="section practical">
+      <div class="float" style="top: 50px; right: 9vw; transform: rotate(-14deg);">
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          <polygon points={starPoints(30)} fill={p.sage} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="container">
+        <header class="header-center">
+          <div class="eyebrow">praktisk</div>
+          <h2 class="h2">det du <br />lurer på</h2>
+          <div class="wobble-row">
+            <svg width="180" height="10" viewBox="0 0 180 10">
+              <path d={wobblePath(180, 10)} fill="none" stroke={p.sage} stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="plans-lead">
+            det meste er ordnet på forhånd. her er det som er greit å vite før du setter deg i bilen.
+          </p>
+        </header>
+
+        <div class="plans-grid">
+          {practical.map((it) => (
+            <div class="plan-card" style={`background: ${it.color}; transform: rotate(${it.rotate}deg);`}>
+              <div class="plan-label">{it.label}</div>
+              <div class="plan-title">{it.title}</div>
+              <div class="plan-body">{it.body}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── Pakkeliste ───────── -->
+    <section class="section packing">
+      <div class="float" style="top: 60px; left: 7vw;">
+        <!-- Cloud 90 -->
+        <svg width="90" height="49.5" viewBox="0 0 80 44">
+          <path d="M 14 36 Q 4 36 6 26 Q 4 18 14 18 Q 16 8 28 10 Q 34 2 46 8 Q 58 4 60 16 Q 74 14 74 26 Q 76 36 64 36 Z"
+                fill={p.paper} stroke={p.ink} stroke-width="1.6" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+      <div class="container">
+        <header class="header-center">
+          <div class="eyebrow">pakkeliste</div>
+          <h2 class="h2">ta med<br />dette</h2>
+          <div class="wobble-row">
+            <svg width="180" height="10" viewBox="0 0 180 10">
+              <path d={wobblePath(180, 10)} fill="none" stroke={p.butter} stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <p class="plans-lead">
+            sengesett, laken og håndkle er det viktigste å huske — det følger ikke med hytta.
+            resten avhenger av været og hva du vil være med på.
+            <br />huk av mens du pakker — siden husker hvor du var.
+          </p>
+        </header>
+
+        <div class="pack-progress">
+          <div class="pack-count" aria-live="polite">0 av {packing.length} pakket</div>
+          <button class="pack-reset" type="button">nullstill lista</button>
+        </div>
+
+        <div class="pack-grid">
+          {packing.map((it) => (
+            <label class="pack-card" style={`background: ${it.color}; transform: rotate(${it.rotate}deg);`}>
+              <input class="pack-check" type="checkbox" data-pack={it.id} />
+              <span class="pack-text">
+                <span class="pack-item">{it.item}</span>
+                <span class="pack-note">{it.note}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <script is:inline>
+      // Packing list ticks live in localStorage — no accounts, no server, and it
+      // survives closing the tab so you can pack over several evenings.
+      (function () {
+        var KEY = "eirikfest.pakkeliste.v1";
+        var boxes = [].slice.call(document.querySelectorAll(".pack-check"));
+        var count = document.querySelector(".pack-count");
+        var reset = document.querySelector(".pack-reset");
+        if (!boxes.length || !count || !reset) return;
+
+        function load() {
+          try {
+            var raw = JSON.parse(localStorage.getItem(KEY));
+            return Array.isArray(raw) ? raw : [];
+          } catch (e) {
+            return [];
+          }
+        }
+
+        function save() {
+          var done = boxes
+            .filter(function (b) { return b.checked; })
+            .map(function (b) { return b.dataset.pack; });
+          try {
+            localStorage.setItem(KEY, JSON.stringify(done));
+          } catch (e) {
+            // private mode / storage full — the ticks still work for this visit
+          }
+          render();
+        }
+
+        function render() {
+          var done = boxes.filter(function (b) { return b.checked; }).length;
+          count.textContent = done + " av " + boxes.length + " pakket";
+        }
+
+        var saved = load();
+        boxes.forEach(function (b) {
+          b.checked = saved.indexOf(b.dataset.pack) !== -1;
+          b.addEventListener("change", save);
+        });
+
+        reset.addEventListener("click", function () {
+          boxes.forEach(function (b) { b.checked = false; });
+          save();
+        });
+
+        render();
+      })();
+    </script>
+
     <!-- ───────── Helga ───────── -->
     <section class="section plans">
       <div class="container">
@@ -706,8 +999,8 @@ const wobblePath = (w: number, h: number) =>
           </div>
           <p class="plans-lead">
             lørdag samles vi alle på hytta.
-            men du er hjertelig velkommen til å bli hele helga: kom fredag,
-            dra søndag, sov i hytta, finn på noe i mellomtiden.
+            rundt det ligger en hel helg: vi kommer fredag, drar søndag,
+            sover i hytta og finner på noe i mellomtiden.
           </p>
         </header>
 
@@ -757,27 +1050,6 @@ const wobblePath = (w: number, h: number) =>
             >
               <div class="fact-label">{f.label}</div>
               <div class="fact-value">{f.value}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- ───────── Map ───────── -->
-    <section class="section map-section">
-      <div class="container">
-        <header class="header-center">
-          <div class="eyebrow">finn meg</div>
-          <h2 class="h2 map-h2">opp i fjellet,<br />over noen kyr</h2>
-        </header>
-
-
-        <div class="step-grid">
-          {steps.map((s) => (
-            <div class="step-card" style={`background: ${s.color}; transform: rotate(${s.rotate}deg);`}>
-              <div class="step-num">{s.n}</div>
-              <div class="step-title">{s.t}</div>
-              <div class="step-note">{s.note}</div>
             </div>
           ))}
         </div>
