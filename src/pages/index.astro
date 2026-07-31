@@ -104,13 +104,19 @@ const packing = [
 ];
 
 const wishlist = [
-  { item: "vintervognpose", note: "gjerne en som holder opp til 3 år", color: p.sky, rotate: -1.5 },
-  { item: "fine bøker", note: "for eksempel «Eventyrorkesteret — Peter og ulven» eller «Mummitrollet: fortellinger, musikk og tegneserier»", color: p.butter, rotate: 1 },
-  { item: "Yoto Mini", note: "lydspiller for barn — historier og musikk han kan styre selv", color: p.rose, rotate: -1 },
-  { item: "løpesykkel", note: "balansesykkel til når beina blir lange nok", color: p.sage, rotate: 1.5 },
-  { item: "kjøkkenhjelper", note: "så han når opp på kjøkkenbenken og kan være med", color: p.poppy, rotate: -1 },
-  { item: "potte", note: "det nærmer seg", color: p.butter, rotate: 1 },
-  { item: "liten krakk", note: "til å nå opp til vasken", color: p.sky, rotate: -1.5 },
+  { item: "klær til barnehagen", note: "størrelse 86 og oppover — regntøy, ullbody og andre hverdagsklær", color: p.sky, rotate: -1.5 },
+  { item: "fottøy til barnehagen", note: "sko, støvler eller tøfler. byttelapp er fint, vi vet ikke størrelsen ennå", color: p.butter, rotate: 1 },
+  { item: "vintervognpose", note: "opp til 3 år, gjerne med forlenger", color: p.rose, rotate: -1 },
+  { item: "fine bøker", note: "for eksempel «Eventyrorkesteret — Peter og ulven», «Mummitrollets fortellinger, musikk og tegneserier» eller Barnas første sangkort", color: p.poppy, rotate: -1 },
+  { item: "sykkelhjelm", note: "størrelse 48/50", color: p.butter, rotate: 1 },
+  { item: "hørselvern", note: "for baby og småbarn", color: p.sky, rotate: -1.5 },
+  { item: "gåvogn", note: "enkel, eller med aktivitetsbrett", color: p.rose, rotate: 1 },
+  { item: "løpesykkel", note: "balansesykkel til når beina blir lange nok", color: p.sage, rotate: -1 },
+  { item: "Yoto Mini", note: "lydspiller for barn — historier og musikk han kan styre selv", color: p.poppy, rotate: 1.5 },
+  { item: "kjøkkenhjelper", note: "så han når opp på kjøkkenbenken og kan være med", color: p.butter, rotate: -1 },
+  { item: "potte", note: "det nærmer seg", color: p.sky, rotate: 1 },
+  { item: "liten krakk", note: "til å nå opp til vasken", color: p.rose, rotate: -1.5 },
+  { item: "penger til sparekonto", note: "3626 766 6096", color: p.sage, rotate: 1 },
 ];
 
 const directionsUrl = "https://www.google.com/maps/dir/?api=1&destination=" +
@@ -154,6 +160,8 @@ const wobblePath = (w: number, h: number) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Navnefest til Eirik · 14–16. august 2026</title>
     <meta name="description" content="Navnefest for Eirik på Romundgardseter Hytter, Høvringen, 14.–16. august 2026." />
+    <!-- Private family page: reachable by link, but kept out of search results. -->
+    <meta name="robots" content="noindex, nofollow" />
     <meta name="theme-color" content={p.bg} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
